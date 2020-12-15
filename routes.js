@@ -61,7 +61,6 @@ router.get( '/download' , (req , res ) => { // TODO: leanify code
             // TODO: save file here 
             users.push(newObject);
         }
-        console.log( users );
         res.header('Content-Type', 'text/csv');
         res.attachment('users.csv');
 
