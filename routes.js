@@ -3,6 +3,7 @@ var connection = require('./mysql');
 var dotenv = require('dotenv');
 var crypto = require('./crypto');
 var moment = require('moment');
+const converter = require('json-2-csv');
 
 dotenv.config();
 
@@ -41,23 +42,36 @@ router.post( '/save' , ( req , res) => {
             });
 });
 
-router.get( '/download' , (req , res ) => {
+router.get( '/download' , (req , res ) => { // TODO: leanify code
     // serve file as spread sheet
     new Promise( (resolve,reject) => {
         const query = 'SELECT * FROM `users`';
-        let users = [];
         connection.query( query , (err,rows,fields) => {
             if( err ) reject(err);
-            for (let i = 0; i < rows.length; i++) {
-                for( var property in rows[i] ) {
-                    // TODO: use a token / session key to decrypt
-                    rows[i][property] = crypto.decrypt( rows[i][property].toString() , process.env.password );
-                }
-                users.push(rows[i]);
-            }
-            resolve( users );
+            resolve( rows );
         });
-    }).then(( jsonData ) => res.json( jsonData ) , 
+    }).then(( rows ) => {
+        let users = [];
+        for (let i = 0; i < rows.length; i++) {
+            let newObject = {};
+            for( var property in rows[i] ) {
+                // TODO: use a token / session key to decrypt
+                newObject[property] = crypto.decrypt( rows[i][property].toString() , process.env.password );
+            }
+            // TODO: save file here 
+            users.push(newObject);
+        }
+        console.log( users );
+        res.header('Content-Type', 'text/csv');
+        res.attachment('users.csv');
+
+        converter.json2csv(users, (err, csv) => {
+            if (err) {
+                throw err;
+            }
+            res.send( csv );
+        });
+    } , 
       (error) => {
           console.log( error );
           res.send('CANNOT DOWNLOAD DATA...');
