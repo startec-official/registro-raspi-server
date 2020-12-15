@@ -73,7 +73,7 @@ router.get( '/download' , (req , res ) => { // TODO: leanify code
     } , 
       (error) => {
           console.log( error );
-          res.send('CANNOT DOWNLOAD DATA...');
+          res.sendStatus(500);
     });
 });
 
