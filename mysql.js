@@ -13,11 +13,11 @@ var preCheck = function() {
   const createTableQuery = `
   CREATE TABLE IF NOT EXISTS ${process.env.database}.users (
     name VARCHAR(255) NOT NULL,
-    age VARCHAR(50) NOT NULL,
-    birthdate VARCHAR(50) NOT NULL,
-    sex VARCHAR(50) NOT NULL,
+    age VARCHAR(255) NOT NULL,
+    birthdate VARCHAR(255) NOT NULL,
+    sex VARCHAR(255) NOT NULL,
     address VARCHAR(255) NOT NULL,
-    phone_number VARCHAR(50) NOT NULL,
+    phone_number VARCHAR(255) NOT NULL,
     datetime VARCHAR(255) NOT NULL
     )
   ENGINE = InnoDB;
