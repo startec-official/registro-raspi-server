@@ -18,7 +18,7 @@ var preCheck = function() {
     sex VARCHAR(255) NOT NULL,
     address VARCHAR(255) NOT NULL,
     phone_number VARCHAR(255) NOT NULL,
-    datetime VARCHAR(255) NOT NULL
+    datetime VARCHAR(500) NOT NULL
     )
   ENGINE = InnoDB;
   `;
