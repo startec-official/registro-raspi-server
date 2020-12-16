@@ -12,13 +12,13 @@ var preConnect = mysql.createConnection({
 var preCheck = function() {
   const createTableQuery = `
   CREATE  TABLE IF NOT EXISTS ${process.env.database}.users (
-    name VARCHAR(255),
-    age VARCHAR(50),
-    birthdate VARCHAR(50),
-    sex VARCHAR(50),
-    address VARCHAR(255),
-    phone_number VARCHAR(50),
-    datetime VARCHAR(255))
+    name VARCHAR(255) NOT NULL,
+    age VARCHAR(50) NOT NULL,
+    birthdate VARCHAR(50) NOT NULL,
+    sex VARCHAR(50) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    phone_number VARCHAR(50) NOT NULL,
+    datetime VARCHAR(255)) NOT NULL
   ENGINE = InnoDB;
   `;
   preConnect.query( `CREATE DATABASE IF NOT EXISTS ${ process.env.database };` , ( err , rows , fields ) => {
