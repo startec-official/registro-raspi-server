@@ -3,6 +3,35 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
+var preConnect = mysql.createConnection({
+  host     : process.env.HOST_NAME,
+  user     : process.env.DB_USER,
+  password : process.env.password
+});
+
+var preCheck = function() {
+  const createTableQuery = `
+  CREATE  TABLE IF NOT EXISTS ${process.env.database}.users (
+    name VARCHAR(255),
+    age VARCHAR(50),
+    birthdate VARCHAR(50),
+    sex VARCHAR(50),
+    address VARCHAR(255),
+    phone_number VARCHAR(50),
+    datetime VARCHAR(255))
+  ENGINE = InnoDB;
+  `;
+  preConnect.query( `CREATE DATABASE IF NOT EXISTS ${ process.env.database };` , ( err , rows , fields ) => {
+    if( err ) throw err;
+    preConnect.query( createTableQuery , ( err , rows , fields ) => {
+      if( err ) return err;
+      console.log( rows );
+    });
+  });
+}
+
+preCheck();
+
 var connection = mysql.createConnection({
   host     : process.env.HOST_NAME,
   user     : process.env.DB_USER,
