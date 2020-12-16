@@ -53,3 +53,10 @@ Contributions
 -------
 Please feel free to drop as an email for potential contributions.
 Contact Us through [startec.innovations@gmail.com](mailto:startec.innovations@gmail.com)
+
+LICENSE and Use
+-------
+Please refer to the `LICENSE.md` file for more information.
+
+This project is covered by the MIT License.
+© 2020 | Startec Innovations
