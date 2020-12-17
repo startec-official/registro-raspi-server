@@ -1,0 +1,1 @@
+This folder is where your operational key should go. It will automatically get generated a key if empty

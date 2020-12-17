@@ -1,5 +1,4 @@
 const NodeRSA = require('node-rsa');
-const { encrypt } = require('./crypto');
 const fs = require('fs');
 var publicKey;
 var privateKey;
@@ -70,7 +69,7 @@ var generateKeys = () => {
   var privateKey = key.exportKey('pkcs1-pem');
 
   var dirName;  
-  if( fs.readdirSync('keys').length > 0 ) {
+  if( fs.readdirSync('keys').length > 1 ) { // TODO: better key detection
     dirName = 'new_keys/';
   }
   else
