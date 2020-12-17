@@ -8,7 +8,12 @@ var rsaCrypto = require('./rsa-crypto');
 
 dotenv.config();
 
-app.use(cors());
+var corsOptions = {
+  origin : "*",
+  optionsSuccessStatus : 200
+}
+
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use( '/' , routes);
 
