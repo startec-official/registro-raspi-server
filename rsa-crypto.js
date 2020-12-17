@@ -55,7 +55,8 @@ var deletePrivateKey = () => {
 }
 
 var clearTemp = () => {
-  fs.rmdirSync('temp' , {recursive : true , force : true});
+  if(fs.existsSync('temp'))
+    fs.rmdirSync('temp' , {recursive : true , force : true});
   fs.mkdirSync('temp');
 }
 
