@@ -6,19 +6,19 @@ dotenv.config();
 var preConnect = mysql.createConnection({
   host     : process.env.HOST_NAME,
   user     : process.env.DB_USER,
-  password : process.env.password
+  password : process.env.password // TODO: hash the password 
 });
 
 var preCheck = function() {
   const createTableQuery = `
   CREATE TABLE IF NOT EXISTS ${process.env.database}.users (
-    name VARCHAR(255) NOT NULL,
-    age VARCHAR(255) NOT NULL,
-    birthdate VARCHAR(255) NOT NULL,
-    sex VARCHAR(255) NOT NULL,
-    address VARCHAR(255) NOT NULL,
-    phone_number VARCHAR(255) NOT NULL,
-    datetime VARCHAR(500) NOT NULL
+    name VARCHAR(${process.env.padding}) NOT NULL,
+    age VARCHAR(${process.env.padding}) NOT NULL,
+    birthdate VARCHAR(${process.env.padding}) NOT NULL,
+    sex VARCHAR(${process.env.padding}) NOT NULL,
+    address VARCHAR(${process.env.padding * 2}) NOT NULL,
+    phone_number VARCHAR(${process.env.padding}) NOT NULL,
+    datetime VARCHAR(${process.env.padding}) NOT NULL
     )
   ENGINE = InnoDB;
   `;

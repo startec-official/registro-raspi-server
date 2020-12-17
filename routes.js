@@ -1,9 +1,11 @@
 var express = require('express');
 var connection = require('./mysql');
 var dotenv = require('dotenv');
-var crypto = require('./crypto');
 var moment = require('moment');
+var rsaCrypto = require('./rsa-crypto');
 const converter = require('json-2-csv');
+var multer = require('multer');
+var upload = multer({ dest : 'temp/' });
 
 dotenv.config();
 
@@ -13,12 +15,12 @@ router.post( '/save' , ( req , res) => {
     new Promise((resolve,reject) => {
         var userData = [];
         for( var property in req.body ) {
-            req.body[property] = crypto.encrypt( req.body[property].toString() , process.env.password ).toString();
+            req.body[property] = rsaCrypto.encryptData( req.body[property].toString() );
         }
         var datetime = moment().format().toString();
-        var encryptedDateTime = crypto.encrypt( datetime , process.env.password ).toString();
-        userData.push( [ req.body.name , req.body.age , req.body.birthdate , req.body.sex, req.body.address , req.body.phoneNumber , encryptedDateTime ] );
-        // TODO: encrypt data here
+        var encryptedDateTime = rsaCrypto.encryptData( datetime );
+        userData.push( [ req.body.name , req.body.age , req.body.birthdate , req.body.sex, req.body.address , req.body.phoneNumber , encryptedDateTime ] ); // TODO : switch to for loop
+        // TODO: create query generator from file
         const query = `
             INSERT INTO users (
                 name,
@@ -42,12 +44,29 @@ router.post( '/save' , ( req , res) => {
             });
 });
 
-router.get( '/download' , (req , res ) => { // TODO: leanify code
-    // serve file as spread sheet
+router.post('/upload' , upload.single('fileKey') , (req,res)=>{
+    new Promise((resolve,reject) => {
+        rsaCrypto.setPrivateKey( req.file.filename );
+        resolve();
+    }).then(
+        () => {
+            res.sendStatus(200);
+        },
+        (err) => {
+            res.sendStatus(500);
+            throw err;
+        }
+    );
+});
+
+router.get( '/download/encrypted' , (req , res ) => { // TODO: leanify code // TODO: make more efficient
     new Promise( (resolve,reject) => {
+        // test key validity
         const query = 'SELECT * FROM `users`';
         connection.query( query , (err,rows,fields) => {
             if( err ) reject(err);
+            if ( rsaCrypto.decryptData(rows[0].name) == 'INCORRECT KEY' ) // TODO : better failure condition
+                reject( 'INCORRECT KEY...' );
             resolve( rows );
         });
     }).then(( rows ) => {
@@ -55,12 +74,11 @@ router.get( '/download' , (req , res ) => { // TODO: leanify code
         for (let i = 0; i < rows.length; i++) {
             let newObject = {};
             for( var property in rows[i] ) {
-                // TODO: use a token / session key to decrypt
-                newObject[property] = crypto.decrypt( rows[i][property].toString() , process.env.password );
+                newObject[property] = rsaCrypto.decryptData( rows[i][property].toString() );
             }
-            // TODO: save file here 
             users.push(newObject);
         }
+        rsaCrypto.deletePrivateKey();
         res.header('Content-Type', 'text/csv');
         res.attachment('users.csv');
 
@@ -73,7 +91,60 @@ router.get( '/download' , (req , res ) => { // TODO: leanify code
     } , 
       (error) => {
           console.log( error );
+          rsaCrypto.deletePrivateKey();
           res.sendStatus(500);
+    });
+});
+
+router.get( '/download/raw' , ( req, res ) => {
+    new Promise( (resolve,reject) => {
+        // test key validity
+        const query = 'SELECT * FROM `users`';
+        connection.query( query , (err,rows,fields) => {
+            if( err ) reject(err);
+            resolve( rows );
+        });
+    }).then(( rows ) => {
+        let users = [];
+        for (let i = 0; i < rows.length; i++) {
+            let newObject = {};
+            for( var property in rows[i] ) {
+                newObject[property] = rows[i][property].toString();
+            }
+            users.push(newObject);
+        }
+        res.header('Content-Type', 'text/csv');
+        res.attachment('users_raw.csv');
+
+        converter.json2csv(users, (err, csv) => {
+            if (err) {
+                throw err;
+            }
+            res.send( csv );
+        });
+    } , 
+      (error) => {
+          console.log( error );
+          res.sendStatus(500);
+    });
+});
+
+router.post('/generate' , (req , res) => {
+    new Promise((resolve,reject)=>{
+        try {
+            rsaCrypto.generateKeys();
+            resolve();
+        }
+        catch( err ) {
+            console.log(err);
+            reject(err);
+        }
+    }).then(()=>{
+        res.sendStatus(200);
+    },
+    (err)=>{
+        console.log(err);
+        res.sendStatus(500);
     });
 });
 
