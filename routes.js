@@ -1,8 +1,9 @@
 var express = require('express');
 var connection = require('./mysql');
+var ip = require('./utils/get-ip');
 var dotenv = require('dotenv');
 var moment = require('moment');
-var rsaCrypto = require('./rsa-crypto');
+var rsaCrypto = require('./utils/rsa-crypto');
 const converter = require('json-2-csv');
 var multer = require('multer');
 var upload = multer({ dest : 'temp/' });
@@ -146,6 +147,18 @@ router.post('/generate' , (req , res) => {
         console.log(err);
         res.sendStatus(500);
     });
+});
+
+router.get('/ip' , (req,res) => {
+    try {
+        if( req.get('origin').split(':')[1] == '//localhost' )
+            res.send( 'localhost' );
+        else
+            res.send( ip.address );
+    }
+    catch(err) {
+        res.sendStatus(500);
+    }
 });
 
 module.exports = router;

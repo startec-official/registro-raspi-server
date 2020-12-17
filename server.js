@@ -4,7 +4,7 @@ var routes = require('./routes');
 var cors = require('cors');
 var bodyParser = require('body-parser');
 var app = express();
-var rsaCrypto = require('./rsa-crypto');
+var rsaCrypto = require('./utils/rsa-crypto');
 
 dotenv.config();
 
