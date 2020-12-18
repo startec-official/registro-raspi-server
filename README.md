@@ -11,7 +11,7 @@ Startec REGISTRO is an open-source COVID case contact tracing system for small a
 
 Learn more about Startec and REGISTRO [here](https://www.facebook.com/startec.ideators).
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.8.
+The developers of this project use [npm](https://www.npmjs.com/) ❤️
 
 Device Fabrication Instructions
 -------
