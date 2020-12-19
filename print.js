@@ -2,9 +2,9 @@ var ipp = require('ipp');
 var PDFDocument = require('pdfkit');
 var concat = require("concat-stream");
 
-var doc = new PDFDocument({margin:0});
+var testPrint = () => {
+    var doc = new PDFDocument({margin:0});
 doc.text(".", 0, 0);
-
 
 doc.pipe(concat(function (data) {
 	var printer = ipp.Printer("http://localhost:631/ipp/printer");
@@ -26,4 +26,14 @@ doc.pipe(concat(function (data) {
 		console.log(res);
 	});
 }));
+}
+
+var findPrinters = () => {
+    bonjour.find({ type: 'ipp' }, function (service) {
+        console.log('Found IPP:', service)
+      });
+}
+
+findPrinters();
+
 doc.end();
