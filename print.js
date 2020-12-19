@@ -2,6 +2,7 @@ var ipp = require('ipp');
 var PDFDocument = require('pdfkit');
 var concat = require("concat-stream");
 var mdns = require('mdns'),
+    browser  = mdns.createBrowser(mdns.tcp('ipp'));
 
 var testPrint = () => {
     var doc = new PDFDocument({margin:0});
@@ -31,7 +32,6 @@ var testPrint = () => {
 }
 
 var findPrinters = () => {
-	browser  = mdns.createBrowser(mdns.tcp('ipp'));
 	
     mdns.Browser.defaultResolverSequence[1] = 'DNSServiceGetAddrInfo' in mdns.dns_sd ? mdns.rst.DNSServiceGetAddrInfo() : mdns.rst.getaddrinfo({families:[4]}); 
     
