@@ -10,6 +10,8 @@ const converter = require('json-2-csv');
 var multer = require('multer');
 var upload = multer({ dest : 'temp/' });
 
+const ifaces = require('os').networkInterfaces();
+
 dotenv.config();
 
 var router = express.Router();
@@ -149,6 +151,24 @@ router.post('/generate' , (req , res) => {
         console.log(err);
         res.sendStatus(500);
     });
+});
+
+router.get( '/ip' , (req,res) => {
+    var address;
+  
+    try {
+        Object.keys(ifaces).forEach(dev => {
+            ifaces[dev].filter(details => {
+                if (details.family === 'IPv4' && details.internal === false) {
+                address = details.address;
+                }
+            });
+        });
+        res.send(address);
+    }
+    catch(e) {
+        res.sendStatus(500);
+    }
 });
 
 module.exports = router;
