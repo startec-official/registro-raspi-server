@@ -31,6 +31,7 @@ var testPrint = () => {
 }
 
 var findPrinters = () => {
+    bonjour.publish({ name: 'My Web Server', type: 'http', port: 4000 })
     bonjour.find({ type: 'ipp' }, function (service) {
         console.log('Found IPP:', service)
       });
