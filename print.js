@@ -1,6 +1,7 @@
 var ipp = require('ipp');
 var PDFDocument = require('pdfkit');
 var concat = require("concat-stream");
+var var bonjour = require('bonjour')();
 
 var testPrint = () => {
     var doc = new PDFDocument({margin:0});
