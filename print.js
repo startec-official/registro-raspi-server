@@ -1,7 +1,7 @@
 var ipp = require('ipp');
 var PDFDocument = require('pdfkit');
 var concat = require("concat-stream");
-var bonjour = require('bonjour')();
+var mdns = require('mdns'),
 
 var testPrint = () => {
     var doc = new PDFDocument({margin:0});
@@ -31,10 +31,14 @@ var testPrint = () => {
 }
 
 var findPrinters = () => {
-    bonjour.publish({ name: 'My Web Server', type: 'http', port: 4000 })
-    bonjour.find({ type: 'ipp' }, function (service) {
-        console.log('Found IPP:', service)
-      });
+	browser  = mdns.createBrowser(mdns.tcp('ipp'));
+	
+    mdns.Browser.defaultResolverSequence[1] = 'DNSServiceGetAddrInfo' in mdns.dns_sd ? mdns.rst.DNSServiceGetAddrInfo() : mdns.rst.getaddrinfo({families:[4]}); 
+    
+    browser.on('serviceUp', function (rec) {
+        console.log(rec.name, 'http://'+rec.host+':'+rec.port+'/'+rec.txtRecord.rp);
+    });
+    browser.start();
 }
 
 findPrinters();
