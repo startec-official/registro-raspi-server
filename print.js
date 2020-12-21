@@ -64,7 +64,7 @@ var printDocument = (doc) => {
             try {
                 doc.pipe(concat(function (data) {
                     console.log(`Printer Name: ${printerName}`);
-                    var printer = ipp.Printer(`http://localhost:631/ipp/printers/${printerName}`);
+                    var printer = ipp.Printer(`http://localhost:631/printers/${printerName}`);
                     var msg = {
                         "operation-attributes-tag": {
                             "requesting-user-name": "Startec",
