@@ -12,6 +12,8 @@ var upload = multer({ dest : 'temp/' });
 
 const ifaces = require('os').networkInterfaces();
 
+var print = require('./print');
+
 dotenv.config();
 
 var router = express.Router();
@@ -168,6 +170,43 @@ router.get( '/ip' , (req,res) => {
     }
     catch(e) {
         res.sendStatus(500);
+    }
+});
+
+router.get( '/print/printers' , (req,res)=>{
+    try {
+        print.findPrinters().then((data) => {
+            res.json(data);
+        },
+        (error) => {
+            throw error;
+        });
+    }
+    catch(e) {
+        res.sendStatus({status: 500});
+    }
+});
+
+router.post( '/print/set/:newPrinter' , (req,res) => {
+    const newPrinter = req.params.newPrinter.toString().trim();
+    try {
+        print.setPrinter( newPrinter );
+        res.sendStatus(200);
+    }
+    catch( e ) {
+        res.sendStatus(500);
+        throw e;
+    }
+});
+
+router.post('/print/send' , (req,res) => {
+    try {
+        print.generateDoc( req.body );
+        res.sendStatus(200);
+    }
+    catch(e) {
+        res.sendStatus(500);
+        throw e;
     }
 });
 
