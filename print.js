@@ -7,7 +7,6 @@ var fs = require('fs');
 var qr = require('qr-image');
 var lineReader = require('line-reader'),
     Promise = require('bluebird');
-const { reject } = require('bluebird');
 
 dotenv.config();
 
@@ -102,7 +101,7 @@ var findPrinters = () => {
             var printerNames = [];
 
             var eachLine = Promise.promisify(lineReader.eachLine);
-            eachLine('test.txt', function(line) {
+            eachLine('/etc/cups/printers.conf', function(line) {
                 if(line.includes('<Printer ')) {
                     printerNames.push( line.replace('<Printer ','').replace('>','').trim() );
                 }
