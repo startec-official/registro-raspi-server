@@ -48,6 +48,7 @@ var attachQRToDocument = (qrStream,user) => {
                 align: 'center'
                 }
             );
+            doc.rect(28.3465,87.874,155.906,155.906).fillAndStroke('#fff','#000');
             doc.image(qrStream, 28.3465, 87.874, {width: 155.906, height: 155.906});
             doc.end();
             resolve(doc);
@@ -134,3 +135,4 @@ module.exports.setPrinter = setPrinter;
 module.exports.generateQR = generateQR;
 module.exports.attachQRToDocument = attachQRToDocument;
 module.exports.printDocument = printDocument;
+module.exports.isSetPrinter = isSetPrinter;

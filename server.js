@@ -19,6 +19,7 @@ app.use(bodyParser.json());
 app.use( '/' , routes);
 
 rsaCrypto.clearTemp(); // ensure temp is empty if server unexpectedly fails
+print.isSetPrinter();
 
 app.listen( process.env.PORT , () => {
   console.log(`${process.env.APP_NAME} listening at http://${process.env.HOST_NAME}:${process.env.PORT}`)
