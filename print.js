@@ -1,48 +1,99 @@
 var ipp = require('ipp');
 var PDFDocument = require('pdfkit');
 var concat = require("concat-stream");
-var mdns = require('mdns-js');
+var crypto = require('./utils/crypto');
+var dotenv = require('dotenv');
 var fs = require('fs');
+var qr = require('qr-image');
 var lineReader = require('line-reader'),
     Promise = require('bluebird');
+const { reject } = require('bluebird');
+
+dotenv.config();
 
 var printerName;
 
-var generateDoc = ( printInfo ) => {
-    console.log( printInfo );
-    
+var generateQR = ( printInfo ) => {
+    return new Promise((resolve,reject) => {
+        try {
+            var plaintext = '';
+            for( property in printInfo )
+                plaintext += printInfo[property] + process.env.delimiter;
+            plaintext = plaintext.substring(0,plaintext.length-1);
+            const finalText = crypto.encryptTag( plaintext );
+            var qrStream = qr.imageSync( finalText , { type: 'png' });
+            resolve(qrStream);
+        }
+        catch(e) {
+            reject(e);
+        }
+    });
 }
 
-var testPrint = () => {
-    if( isSetPrinter ) {
-        var doc = new PDFDocument({margin:0});
-        doc.text(".", 0, 0);
-        // TODO: replace with custom template doc
-        doc.pipe(concat(function (data) {
-            var printer = ipp.Printer(`http://localhost:631/ipp/printer/${printerName}`);
-            var msg = {
-                "operation-attributes-tag": {
-                    "requesting-user-name": "Bumblebee",
-                    "job-name": "  whatever.pdf",
-                    "document-format": "application/pdf"
-                },
-                "job-attributes-tag":{
-            "media-col": {
-                "media-source": "tray-2"
-            }
+var attachQRToDocument = (qrStream,user) => {
+    return new Promise((resolve,reject) => {
+        try {
+            var doc = new PDFDocument({margin: 0});
+            doc.image('id-layout/id-layout.png', {width: 209.764, height: 297.638});
+            doc.fontSize(10);
+            doc.font('Helvetica-Bold');
+            doc.text(user.name.toString().trim().toUpperCase() , 28.3465 , 10.34646 , {
+                width: 155.906,
+                align: 'center'
                 }
-                , data: data
-            };
-            printer.execute("Print-Job", msg, function(err, res){
-                console.log(err);
-                console.log(res);
-            });
-        }));
-        doc.end();
-    }
-    else {
-        // TODO: error handling here
-    }
+            );
+            doc.fontSize(6);
+            doc.font('Helvetica');
+            doc.text(user.address.toString().trim().toUpperCase() , 28.3465 , 43.93701 , {
+                width: 155.906,
+                align: 'center'
+                }
+            );
+            doc.image(qrStream, 28.3465, 87.874, {width: 155.906, height: 155.906});
+            doc.end();
+            resolve(doc);
+        }
+        catch(e) {
+            reject(e);
+        }
+    });
+}
+
+var printDocument = (doc) => {
+    return new Promise((resolve,reject) => {
+        if( isSetPrinter ) {
+            try {
+                doc.pipe(concat(function (data) {
+                    var printer = ipp.Printer(`http://localhost:631/ipp/printer/${printerName}`);
+                    var msg = {
+                        "operation-attributes-tag": {
+                            "requesting-user-name": "Startec",
+                            "job-name": 'qr-print.pdf',
+                            "document-format": "application/pdf"
+                        },
+                        "job-attributes-tag":{
+                    "media-col": {
+                        "media-source": "tray-2"
+                    }
+                        }
+                        , data: data
+                    };
+                    printer.execute("Print-Job", msg, function(err, res){
+                        console.log(err);
+                        console.log(res);
+                    });
+                }));
+                doc.end();
+                resolve();
+            }
+            catch(err) {
+                reject();
+            }
+        }
+        else {
+            reject();
+        }
+    });
 }
 
 var findPrinters = () => {
@@ -81,4 +132,6 @@ var setPrinter = ( newPrinter ) => {
 
 module.exports.findPrinters = findPrinters;
 module.exports.setPrinter = setPrinter;
-module.exports.generateDoc = generateDoc;
+module.exports.generateQR = generateQR;
+module.exports.attachQRToDocument = attachQRToDocument;
+module.exports.printDocument = printDocument;

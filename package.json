@@ -27,12 +27,12 @@
     "ipp": "^2.0.1",
     "json-2-csv": "^3.8.0",
     "line-reader": "^0.4.0",
-    "mdns-js": "^1.0.3",
     "moment": "^2.29.1",
     "multer": "^1.4.2",
     "mysql": "^2.18.1",
     "node-rsa": "^1.1.1",
-    "pdfkit": "^0.11.0"
+    "pdfkit": "^0.11.0",
+    "qr-image": "^3.2.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"

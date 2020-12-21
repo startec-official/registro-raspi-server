@@ -201,8 +201,14 @@ router.post( '/print/set/:newPrinter' , (req,res) => {
 
 router.post('/print/send' , (req,res) => {
     try {
-        print.generateDoc( req.body );
-        res.sendStatus(200);
+        print.generateQR(req.body).then((qrStream) => {
+            print.attachQRToDocument(qrStream).then((doc) => {
+                print.printDocument(doc).then(() => {
+                    console.log('document printed!');
+                    res.sendStatus(200);
+                });
+            }) 
+        });
     }
     catch(e) {
         res.sendStatus(500);

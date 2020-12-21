@@ -7,3 +7,4 @@ new_keys/public.pem
 keys/private.pem
 keys/public.pem
 test.txt
+generate.svg
