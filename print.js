@@ -63,6 +63,7 @@ var printDocument = (doc) => {
         if( isSetPrinter ) {
             try {
                 doc.pipe(concat(function (data) {
+                    console.log(`Printer Name: ${printerName}`);
                     var printer = ipp.Printer(`http://localhost:631/ipp/printer/${printerName}`);
                     var msg = {
                         "operation-attributes-tag": {
