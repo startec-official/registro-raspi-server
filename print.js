@@ -82,7 +82,6 @@ var printDocument = (doc) => {
                         console.log(res);
                     });
                 }));
-                doc.end();
                 resolve();
             }
             catch(err) {
