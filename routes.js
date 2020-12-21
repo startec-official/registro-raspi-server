@@ -204,7 +204,6 @@ router.post('/print/send' , (req,res) => {
         print.generateQR(req.body).then((qrStream) => {
             print.attachQRToDocument(qrStream,req.body).then((doc) => {
                 print.printDocument(doc).then(() => {
-                    console.log('document printed!');
                     res.sendStatus(200);
                 });
             }) 

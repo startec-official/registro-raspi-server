@@ -14,9 +14,7 @@ var decrypt = ( ciphertext , key ) => {
 }
 
 var encryptTag = (message) => {
-    console.log(`message: ${message}`);
     var key = makeRandom(process.env.key_char_count);
-    console.log(`key: ${key}`);
     return CryptoJS.AES.encrypt( message , key ).toString().trim() + key.trim() + process.env.terminator;
 }
 
