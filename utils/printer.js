@@ -118,11 +118,15 @@ var findPrinters = () => {
 }
 
 var isSetPrinter = () => {
-    const availablePrinters = findPrinters();
-    // if there's only one printer, set that one up as the default
-    if(availablePrinters.length > 0 )
-        printerName = availablePrinters[0];
+    findPrinters().then((availablePrinters) => {
+        if(availablePrinters.length > 0 )
+            printerName = availablePrinters[0];
         return printerName == undefined;
+    },(error) => {
+        console.log(error);
+        return printerName == undefined;
+    });
+    // if there's only one printer, set that one up as the default
 }
 
 var setPrinter = ( newPrinter ) => {
