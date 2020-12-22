@@ -13,7 +13,6 @@ router.get('/get' , (req , res ) => {
                 const rawData = data.toString('utf8').split('\n');
                 const _hostname = rawData[0];
                 const _ip = rawData[1];
-                const _password = rawData[2];
                 res.json( { hostname : _hostname , ip : _ip } );
             });
         }
@@ -26,8 +25,10 @@ router.get('/get' , (req , res ) => {
 router.post( '/set' , (req,res) => {
     const hostname = req.body.hostname;
     const ip = req.body.ip;
+    const user = req.body.user;
     const password = req.body.password;
-    const writeData = `${hostname}\n${ip}\n${password}`;
+
+    const writeData = `${hostname}\n${user}\n${ip}\n${password}`;
     fs.writeFile('host',writeData,'utf8',(err)=> {
         if(err) {
             res.sendStatus(500);
