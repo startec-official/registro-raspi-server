@@ -58,5 +58,5 @@ LICENSE and Use
 -------
 Please refer to the `LICENSE.md` file for more information.
 
-This project is covered by the MIT License.
+This project is covered by the BSD License.
 © 2020 | Startec Innovations
