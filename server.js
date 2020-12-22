@@ -1,11 +1,14 @@
 var dotenv = require('dotenv');
 var express = require('express');
-var routes = require('./routes');
 var cors = require('cors');
 var bodyParser = require('body-parser');
 var app = express();
 var rsaCrypto = require('./utils/rsa-crypto');
-var print = require('./print');
+var print = require('./utils/printer');
+
+var apiRoutes = require('./routes/api-routes');
+var printRoutes = require('./routes/print-routes');
+var remoteRoutes = require('./routes/remote-routes');
 
 dotenv.config();
 
@@ -16,7 +19,10 @@ var corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
-app.use( '/' , routes);
+
+app.use( '/api' , apiRoutes);
+app.use('/print',printRoutes);
+app.use('/remote',remoteRoutes);
 
 rsaCrypto.clearTemp(); // ensure temp is empty if server unexpectedly fails
 print.isSetPrinter();

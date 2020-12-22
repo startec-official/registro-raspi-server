@@ -1,10 +1,10 @@
-var connection = require('./mysql');
+var connection = require('../connection/mysql');
 var dotenv = require('dotenv');
 
 var express = require('express');
 var moment = require('moment');
 
-var rsaCrypto = require('./utils/rsa-crypto');
+var rsaCrypto = require('../utils/rsa-crypto');
 
 const converter = require('json-2-csv');
 var multer = require('multer');
@@ -12,11 +12,10 @@ var upload = multer({ dest : 'temp/' });
 
 const ifaces = require('os').networkInterfaces();
 
-var print = require('./print');
-
 dotenv.config();
 
 var router = express.Router();
+
 
 router.post( '/save' , ( req , res) => {
     new Promise((resolve,reject) => {
@@ -170,48 +169,6 @@ router.get( '/ip' , (req,res) => {
     }
     catch(e) {
         res.sendStatus(500);
-    }
-});
-
-router.get( '/print/printers' , (req,res)=>{
-    try {
-        print.findPrinters().then((data) => {
-            res.json(data);
-        },
-        (error) => {
-            throw error;
-        });
-    }
-    catch(e) {
-        res.sendStatus({status: 500});
-    }
-});
-
-router.post( '/print/set/:newPrinter' , (req,res) => {
-    const newPrinter = req.params.newPrinter.toString().trim();
-    try {
-        print.setPrinter( newPrinter );
-        res.sendStatus(200);
-    }
-    catch( e ) {
-        res.sendStatus(500);
-        throw e;
-    }
-});
-
-router.post('/print/send' , (req,res) => {
-    try {
-        print.generateQR(req.body).then((qrStream) => {
-            print.attachQRToDocument(qrStream,req.body).then((doc) => {
-                print.printDocument(doc).then(() => {
-                    res.sendStatus(200);
-                });
-            }) 
-        });
-    }
-    catch(e) {
-        res.sendStatus(500);
-        throw e;
     }
 });
 
