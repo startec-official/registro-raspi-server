@@ -40,7 +40,6 @@ router.post( '/set' , (req,res) => {
 
 router.post('/upload' , (req,res)=> {
     // TODO: upload to remote database host here
-    console.log('uploaded data...');
     res.sendStatus(200);
 });
 
