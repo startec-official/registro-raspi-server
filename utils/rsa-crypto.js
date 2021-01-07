@@ -1,5 +1,7 @@
 const NodeRSA = require('node-rsa');
 const fs = require('fs');
+var rimraf = require('rimraf');
+const require
 var publicKey;
 var privateKey;
 var fileName;
@@ -44,7 +46,7 @@ var setPrivateKey = ( _filename ) => {
 
 var deletePrivateKey = () => {
   try {
-    fs.unlinkSync(`temp/${fileName}`);
+    rimraf("/temp", function () { console.log("done deleting temp..."); });
     privateKey = undefined;
     fileName = undefined;
   }
