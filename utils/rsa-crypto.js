@@ -56,11 +56,12 @@ var deletePrivateKey = () => {
 }
 
 var clearTemp = () => {
-  if(fs.existsSync('temp'))
+  if(fs.existsSync('temp')) {
     rimraf("/temp", () => {
       console.log("done deleting temp...");
       fs.mkdirSync('temp');
     });
+  }
 }
 
 var isPublicKeySet = () => {
