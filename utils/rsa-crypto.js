@@ -46,7 +46,7 @@ var setPrivateKey = ( _filename ) => {
 var deletePrivateKey = () => {
   try {
     if(fs.existsSync('temp')) {
-      rimraf("/temp", () => {
+      rimraf("temp", () => {
         privateKey = undefined;
         fileName = undefined;
         console.log("done deleting temp...");
@@ -62,7 +62,7 @@ var deletePrivateKey = () => {
 
 var clearTemp = () => {
   if(fs.existsSync('temp')) {
-    rimraf("/temp", () => {
+    rimraf("temp", () => {
       console.log("done deleting temp...");
       fs.rmdirSync('temp');
       fs.mkdirSync('temp');
