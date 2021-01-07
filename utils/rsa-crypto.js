@@ -1,7 +1,6 @@
 const NodeRSA = require('node-rsa');
 const fs = require('fs');
 var rimraf = require('rimraf');
-const require
 var publicKey;
 var privateKey;
 var fileName;
