@@ -135,6 +135,20 @@ router.get( '/download/raw' , ( req, res ) => {
     });
 });
 
+router.delete('/delete' , (req,res) => {
+    new Promise((resolve,reject) => {
+        connection.query( 'DELETE FROM `users`' , (err,rows,fields) => {
+            if(err) reject(err);
+            resolve(rows);
+        });
+    }).then((rows) => {
+        res.sendStatus(200);
+    }, (error) => {
+        console.log(error);
+        res.sendStatus(500);
+    });
+});
+
 router.post('/generate' , (req , res) => {
     new Promise((resolve,reject)=>{
         try {
