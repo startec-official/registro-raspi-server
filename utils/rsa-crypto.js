@@ -58,6 +58,7 @@ var clearTemp = () => {
   if(fs.existsSync('temp')) {
     rimraf("/temp", () => {
       console.log("done deleting temp...");
+      fs.unlinkSync('temp');
       fs.mkdirSync('temp');
     });
   }
