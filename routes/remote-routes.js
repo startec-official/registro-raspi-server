@@ -1,6 +1,8 @@
+const { kdf } = require('crypto-js');
 var express = require('express');
 var fs = require('fs');
 var router = express.Router();
+var remoteConnection = require('../connection/remote-sql');
 
 router.get('/get' , (req , res ) => {
     fs.stat('host',(err,stats)=>{
@@ -35,6 +37,21 @@ router.post( '/set' , (req,res) => {
             throw err;
         }
         res.sendStatus(200);
+    });
+});
+
+router.get('/blacklist/get', (req,res) => {
+    new Promise((resolve,reject) => {
+        remoteConnection.query('SELECT name,age,birthdate,sex,address FROM `blacklist`;',(err,rows,fields)=> {
+            if (err) reject (err);
+            resolve(rows);
+        });
+    }).then((rows) => {
+        res.json(rows);
+    }, (err) => {
+        console.log(err);
+        res.sendStatus(500);
+        throw err;
     });
 });
 
